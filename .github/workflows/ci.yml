@@ -1,0 +1,22 @@
+name: CI - Docker Build
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+
+jobs:
+  build-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build client image
+        run: docker build -t ecommerce-client ./client
+
+  build-functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build functions image
+        run: docker build -t ecommerce-functions ./functions
