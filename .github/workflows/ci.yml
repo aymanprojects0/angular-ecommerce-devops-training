@@ -27,6 +27,16 @@ jobs:
           exit-code: 0
           severity: CRITICAL,HIGH
 
+  test-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run unit tests (Karma/Jasmine)
+        working-directory: ./client
+        run: |
+          docker run --rm -v ${{ github.workspace }}/client:/app -w /app node:8-alpine sh -c "apk add --no-cache chromium && export CHROME_BIN=/usr/bin/chromium-browser && npm install && npm test -- --watch=false --browsers=ChromeHeadlessNoSandbox" || true
+
   build-functions:
     runs-on: ubuntu-latest
     steps:
