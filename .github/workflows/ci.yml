@@ -11,12 +11,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: npm audit (client)
+        working-directory: ./client
+        run: npm audit --audit-level=moderate || true
+
       - name: Build client image
-        run: docker build -t ecommerce-client ./client
+        run: docker build -t ecommerce-client:${{ github.sha }} ./client
+
+      - name: Trivy scan (client image)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ecommerce-client:${{ github.sha }}
+          format: table
+          exit-code: 0
+          severity: CRITICAL,HIGH
 
   build-functions:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: npm audit (functions)
+        working-directory: ./functions
+        run: npm audit --audit-level=moderate || true
+
       - name: Build functions image
-        run: docker build -t ecommerce-functions ./functions
+        run: docker build -t ecommerce-functions:${{ github.sha }} ./functions
+
+      - name: Trivy scan (functions image)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ecommerce-functions:${{ github.sha }}
+          format: table
+          exit-code: 0
+          severity: CRITICAL,HIGH
