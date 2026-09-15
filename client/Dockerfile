@@ -1,5 +1,6 @@
 FROM node:8-alpine AS build
 WORKDIR /app
+RUN apk add --no-cache python2 make g++
 COPY package*.json ./
 RUN npm install
 COPY . .
